@@ -1,0 +1,27 @@
+#!/bin/bash
+BASEDIR=$(dirname "$0")
+export XC_IP=${XC_IP:=ssp.local}
+export XC_ROOT=${XC_ROOT:="`realpath $BASEDIR/..`"}
+export XC_CL_OPTS=${XC_CL_OPTS:=" "}
+export XC_USER=${XC_USER:=linaro}
+export XC_SSH=${XC_USER}@${XC_IP}
+
+ping -c 1 -t 1 $XC_IP >/dev/null 2>&1 
+if [ $? -ne 0 ]; then
+    echo WARNING: unable to connect to ${XC_IP}, check XC_IP?
+    exit -1
+fi
+
+
+xcExec() {
+    ssh -o LogLevel=ERROR $XC_SSH "$*"
+}
+
+xcCopy() {
+    scp -o LogLevel=ERROR $1 $XC_SSH:$2
+}
+
+xcExec mkdir -p ./tmp
+xcCopy $1 ./tmp/$1
+xcExec "(cd ./tmp;./$* ${XC_CL_OPTS} )"
+xcExec "killall $1"

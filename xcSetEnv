@@ -1,0 +1,74 @@
+#!/bin/bash
+
+if [ "$0" != "-bash"  -a  "$0" != "/bin/bash" ] ; then  
+    echo must be run , using . to source this file
+    echo . ~/xcRpi/xcSetEnv
+fi
+
+
+if [ "$XC_ROOT" == "" -o "$XC_IP" == "" -o "$XC_SSH" == "" ] ; then
+    if [ -f ~/.xcRpi.config ] ; then 
+        echo using ~/.xcRpi.config
+        . ~/.xcRpi.config
+    fi
+fi
+
+
+export XC_IP=${XC_IP:=raspberrypi.local}
+export XC_ROOT=${XC_ROOT:="`realpath ~/xcRpi`"}
+export XC_USER=${XC_USER:=pi}
+export XC_SSH=${XC_USER}@${XC_IP}
+
+
+# store XC_IP/XC_ROOT/SC_SSH for next time (user may have overridden)
+echo "export XC_IP=$XC_IP; export XC_ROOT=$XC_ROOT; export XC_USER=$XC_USER" > ~/.xcRpi.config
+
+
+
+# cant use this, as env scripts cannot get filename 
+# export XC_ROOT=${XC_ROOT:="`realpath $BASEDIR/..`"}
+echo export XC_IP=$XC_IP
+echo export XC_ROOT=$XC_ROOT
+echo export XC_USER=$XC_USER
+
+export PATH=${XC_ROOT}/scripts:$PATH
+echo PATH=$PATH
+
+
+ping -c 1 -t 1 $XC_IP >/dev/null 2>&1 
+if [ $? -ne 0 ]; then
+    echo WARNING: unable to connect to ${XC_IP}, check XC_IP?
+fi
+
+
+
+# PLATFORM=`uname`
+# if [ "${PLATFORM}" = "Darwin" ]; then
+#     ;
+# else
+#     ;
+# fi 
+
+
+
+xcExec() {
+    echo ssh -o LogLevel=ERROR $XC_SSH "$*"
+    ssh -o LogLevel=ERROR $XC_SSH "$*"
+}
+
+xcCopy() {
+    echo scp -o LogLevel=ERROR $1 $XC_SSH:$2
+    scp -o LogLevel=ERROR $1 $XC_SSH:$2
+}
+
+
+echo ============================
+echo Commands
+
+echo ============================
+echo xcExec remotecmd - execute command on remote 
+echo xcCopy localfile remotefile - copy local file to remote 
+echo xcCompile patch.cpp - compile single c++ file
+echo xcRun  patch - run local executable patch on remote
+echo xcCompileRun patch.cpp  - compile local file and run on remote
+
