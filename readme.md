@@ -15,6 +15,8 @@ e.g xcCompileRun render.cpp
 clang-10, llvm, cmake
 
 
+for SSP speific's see note at bottom!
+
 ## requirements
 supported OS are:
 - macOS
@@ -103,3 +105,17 @@ see [cmakefaq.md](https://github.com/TheTechnobear/xcRpi/blob/master/cmake/cmake
 
 article on cross-compiling on mac 
 https://medium.com/@haraldfernengel/cross-compiling-c-c-from-macos-to-raspberry-pi-in-2-easy-steps-23f391a8c63
+
+
+
+## SSP specifics
+the xcXXX set of projects are designed for different envrionents, but are all based on the same principles
+really the main difference is for different platforms we need to build a different sysroot, based on the headers/libs 
+that are used on that platform
+
+this is done in install/install_os.sh, where I usually rsync from the host the binaries
+
+currently this is NOT correct for the ssp, when I tried this i hit a number of issues due to symbolic links. which I actually fixed manually.
+I should have scripted it, but I was pretty busy at the time!
+the basics of how to do this are still do the rsync that is commented out, but it when you compile and get errors, just look for missing libs
+(which will be missing due to it using links on the ssp os)
