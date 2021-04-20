@@ -1,27 +1,27 @@
 #!/bin/bash
 
-if [ "$0" != "-bash"  -a  "$0" != "/bin/bash" ] ; then  
+if [ "$0" != "-bash"  -a  "$0" != "/bin/bash"  -a "$0" !="-zsh" -a "$0" != "/bin/zsh" ] ; then  
     echo must be run , using . to source this file
-    echo . ~/xcRpi/xcSetEnv
+    echo . ~/xcSSP/xcSetEnv
 fi
 
 
 if [ "$XC_ROOT" == "" -o "$XC_IP" == "" -o "$XC_SSH" == "" ] ; then
-    if [ -f ~/.xcRpi.config ] ; then 
-        echo using ~/.xcRpi.config
-        . ~/.xcRpi.config
+    if [ -f ~/.xcSSP.config ] ; then 
+        echo using ~/.xcSSP.config
+        . ~/.xcSSP.config
     fi
 fi
 
 
 export XC_IP=${XC_IP:=raspberrypi.local}
-export XC_ROOT=${XC_ROOT:="`realpath ~/xcRpi`"}
+export XC_ROOT=${XC_ROOT:="`realpath ~/xcSSP`"}
 export XC_USER=${XC_USER:=pi}
 export XC_SSH=${XC_USER}@${XC_IP}
 
 
 # store XC_IP/XC_ROOT/SC_SSH for next time (user may have overridden)
-echo "export XC_IP=$XC_IP; export XC_ROOT=$XC_ROOT; export XC_USER=$XC_USER" > ~/.xcRpi.config
+echo "export XC_IP=$XC_IP; export XC_ROOT=$XC_ROOT; export XC_USER=$XC_USER" > ~/.xcSSP.config
 
 
 
@@ -31,14 +31,17 @@ echo export XC_IP=$XC_IP
 echo export XC_ROOT=$XC_ROOT
 echo export XC_USER=$XC_USER
 
+echo checking XC_IP
+ping -c 1 -t 1 $XC_IP >/dev/null 2>&1 
+if [ $? -ne 0 ]; then
+    echo WARNING: unable to connect to ${XC_IP}, check XC_IP?
+    echo testing 
+fi
+
 export PATH=${XC_ROOT}/scripts:$PATH
 echo PATH=$PATH
 
 
-ping -c 1 -t 1 $XC_IP >/dev/null 2>&1 
-if [ $? -ne 0 ]; then
-    echo WARNING: unable to connect to ${XC_IP}, check XC_IP?
-fi
 
 
 
