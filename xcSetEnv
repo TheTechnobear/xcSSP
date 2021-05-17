@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ "$0" != "-bash"  -a  "$0" != "/bin/bash"  -a "$0" !="-zsh" -a "$0" != "/bin/zsh" ] ; then  
+if [ "$0" != "bash" -a "$0" != "-bash"  -a  "$0" != "/bin/bash"  -a "$0" != "-zsh" -a "$0" != "/bin/zsh" ] ; then  
     echo must be run , using . to source this file
     echo . ~/xcSSP/xcSetEnv
 fi
